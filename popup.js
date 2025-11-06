@@ -59,12 +59,58 @@ function testConfetti(level) {
       origin: { y: 0.4 },
       ticks: 300,
       scalar: 1.2
+    },
+    'extreme': {
+      particleCount: 500,
+      spread: 180,
+      origin: { y: 0.5 },
+      ticks: 400,
+      scalar: 1.5,
+      gravity: 0.5
     }
   };
 
   const config = configs[level];
 
-  if (level === 'a-ton') {
+  if (level === 'extreme') {
+    // EXTREME MODE - Note: shortened for popup to 3 seconds
+    showStatus('EXTREME MODE! (3s preview)');
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+
+    const interval = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        return;
+      }
+
+      confetti({
+        ...config,
+        particleCount: 100,
+        angle: 60,
+        spread: 100,
+        origin: { x: 0, y: 0.6 }
+      });
+
+      confetti({
+        ...config,
+        particleCount: 100,
+        angle: 120,
+        spread: 100,
+        origin: { x: 1, y: 0.6 }
+      });
+
+      confetti({
+        ...config,
+        particleCount: 80,
+        angle: 90,
+        spread: 120,
+        origin: { x: 0.5, y: 0.3 }
+      });
+    }, 150);
+  } else if (level === 'a-ton') {
     // Multiple bursts
     const duration = 3000;
     const animationEnd = Date.now() + duration;

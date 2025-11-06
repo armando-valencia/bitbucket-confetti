@@ -6,7 +6,7 @@ A Chrome extension that celebrates your Bitbucket pull request merges with confe
 
 - Automatic confetti animation when a PR is merged on Bitbucket
 - Manual trigger button for already-merged PRs
-- Three confetti levels: Minimal, A Lot, and A TON
+- Four confetti levels: Minimal, A Lot, A TON, and EXTREME
 - Easy-to-use settings panel
 - Test button to preview confetti effects
 
@@ -50,6 +50,7 @@ Click the extension icon to open settings and:
 - **Minimal**: A subtle celebration with ~50 particles
 - **A Lot**: The perfect amount with ~150 particles (default)
 - **A TON**: MAXIMUM CELEBRATION with ~300 particles and multiple bursts!
+- **EXTREME**: ABSOLUTELY RIDICULOUS - 10 seconds of non-stop confetti explosions from all directions! Completely covers the screen!
 
 ## Project Structure
 

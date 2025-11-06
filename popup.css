@@ -72,6 +72,16 @@ h1 {
   accent-color: #4CAF50;
 }
 
+.radio-option.extreme {
+  background: linear-gradient(135deg, rgba(255, 69, 0, 0.3) 0%, rgba(255, 140, 0, 0.3) 100%);
+  border: 2px solid rgba(255, 69, 0, 0.5);
+}
+
+.radio-option.extreme:hover {
+  background: linear-gradient(135deg, rgba(255, 69, 0, 0.4) 0%, rgba(255, 140, 0, 0.4) 100%);
+  border-color: rgba(255, 69, 0, 0.7);
+}
+
 .radio-label {
   display: flex;
   flex-direction: column;
