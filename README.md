@@ -5,6 +5,7 @@ A Chrome extension that celebrates your Bitbucket pull request merges with confe
 ## Features
 
 - Automatic confetti animation when a PR is merged on Bitbucket
+- Manual trigger button for already-merged PRs
 - Three confetti levels: Minimal, A Lot, and A TON
 - Easy-to-use settings panel
 - Test button to preview confetti effects
@@ -32,11 +33,17 @@ Alternatively, you can create your own icons or use any 16x16, 48x48, and 128x12
 
 ## Usage
 
+### Automatic Mode
 1. Visit any Bitbucket pull request page (e.g., `https://bitbucket.org/yourteam/yourrepo/pull-requests/123`)
-2. When the PR is merged, confetti will automatically appear!
-3. Click the extension icon to open settings and:
-   - Choose your preferred confetti level
-   - Test the confetti effect with the "Test Confetti" button
+2. When the PR is merged (while you're watching), confetti will automatically appear!
+
+### Manual Mode (Already-Merged PRs)
+If you visit a PR that's already merged, you'll see a "🎉 Celebrate!" button in the bottom-right corner. Click it to trigger confetti anytime!
+
+### Settings
+Click the extension icon to open settings and:
+- Choose your preferred confetti level
+- Test the confetti effect with the "Test Confetti" button
 
 ## Confetti Levels
 

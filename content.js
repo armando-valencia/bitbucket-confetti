@@ -103,6 +103,53 @@
     return false;
   }
 
+  // Add a manual trigger button for already-merged PRs
+  function addManualTriggerButton() {
+    if (!isPRMerged()) return;
+    if (document.getElementById('bitbucket-confetti-btn')) return; // Already added
+
+    const button = document.createElement('button');
+    button.id = 'bitbucket-confetti-btn';
+    button.textContent = '🎉 Celebrate!';
+    button.style.cssText = `
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      z-index: 10000;
+      padding: 12px 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+      transition: all 0.2s ease;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    `;
+
+    button.addEventListener('mouseenter', () => {
+      button.style.transform = 'translateY(-2px)';
+      button.style.boxShadow = '0 6px 16px rgba(102, 126, 234, 0.5)';
+    });
+
+    button.addEventListener('mouseleave', () => {
+      button.style.transform = 'translateY(0)';
+      button.style.boxShadow = '0 4px 12px rgba(102, 126, 234, 0.4)';
+    });
+
+    button.addEventListener('click', () => {
+      triggerConfetti();
+      button.textContent = '🎉 Woohoo!';
+      setTimeout(() => {
+        button.textContent = '🎉 Celebrate!';
+      }, 2000);
+    });
+
+    document.body.appendChild(button);
+  }
+
   // Observe DOM changes to detect merge events
   function observePRStatus() {
     if (isPRMerged() && !hasTriggered) {
@@ -111,11 +158,21 @@
       return;
     }
 
+    // Add manual trigger button if already merged
+    if (isPRMerged()) {
+      addManualTriggerButton();
+    }
+
     const observer = new MutationObserver((mutations) => {
       if (isPRMerged() && !hasTriggered) {
         hasTriggered = true;
         triggerConfetti();
         observer.disconnect();
+      }
+
+      // Add button if merge happens
+      if (isPRMerged()) {
+        addManualTriggerButton();
       }
     });
 
