@@ -4,6 +4,9 @@
 (function() {
   'use strict';
 
+  console.log('🎉 Bitbucket Confetti extension loaded!');
+  console.log('Current URL:', window.location.href);
+
   let hasTriggered = false;
 
   // Get confetti settings from storage
@@ -81,32 +84,62 @@
 
   // Check if PR is merged by looking for merge indicators
   function isPRMerged() {
+    console.log('Checking if PR is merged...');
+
     // Look for the merged state badge/indicator
     const mergedBadge = document.querySelector('[data-testid="pullrequest-state-badge"]');
     if (mergedBadge) {
       const text = mergedBadge.textContent.toLowerCase();
-      return text.includes('merged');
+      console.log('Found badge with text:', text);
+      if (text.includes('merged')) {
+        console.log('✓ PR is merged (badge check)');
+        return true;
+      }
     }
 
     // Alternative: check for merge message
     const mergeMessage = document.querySelector('[data-qa="pr-merged-message"]');
     if (mergeMessage) {
+      console.log('✓ PR is merged (merge message check)');
       return true;
     }
 
     // Check for "Merged" text in various places
-    const headerText = document.body.innerText;
-    if (headerText.includes('This pull request is merged')) {
+    const bodyText = document.body.innerText.toLowerCase();
+    if (bodyText.includes('this pull request is merged') ||
+        bodyText.includes('merged this pull request') ||
+        bodyText.includes('pull request merged')) {
+      console.log('✓ PR is merged (body text check)');
       return true;
     }
 
+    // Check for span or div with "MERGED" status
+    const statusElements = document.querySelectorAll('span, div, button');
+    for (const el of statusElements) {
+      const text = el.textContent.trim().toUpperCase();
+      if (text === 'MERGED' && el.children.length === 0) {
+        console.log('✓ PR is merged (status element check)');
+        return true;
+      }
+    }
+
+    console.log('✗ PR is not merged (no indicators found)');
     return false;
   }
 
   // Add a manual trigger button for already-merged PRs
   function addManualTriggerButton() {
-    if (!isPRMerged()) return;
-    if (document.getElementById('bitbucket-confetti-btn')) return; // Already added
+    console.log('Attempting to add manual trigger button...');
+    if (!isPRMerged()) {
+      console.log('Skipping button - PR not merged');
+      return;
+    }
+    if (document.getElementById('bitbucket-confetti-btn')) {
+      console.log('Button already exists');
+      return; // Already added
+    }
+
+    console.log('Adding celebrate button!');
 
     const button = document.createElement('button');
     button.id = 'bitbucket-confetti-btn';
