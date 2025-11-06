@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Bitbucket Confetti",
   "version": "1.0.0",
-  "description": "Celebrate PR merges with confetti on Bitbucket!",
+  "description": "Your PRs are boring. Let's fix that with confetti.",
   "permissions": [
     "storage"
   ],

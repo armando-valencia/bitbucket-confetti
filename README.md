@@ -1,108 +1,106 @@
 # Bitbucket Confetti
 
-A Chrome extension that celebrates your Bitbucket pull request merges with confetti!
+look, merging PRs should feel like a victory. this extension makes that happen with an unreasonable amount of confetti.
 
-## Features
+## what does it do
 
-- Automatic confetti animation when a PR is merged on Bitbucket
-- Manual trigger button for already-merged PRs
-- Four confetti levels: Minimal, A Lot, A TON, and EXTREME
-- Easy-to-use settings panel
-- Test button to preview confetti effects
+- throws confetti at your screen when you merge a PR (automatically, like magic)
+- adds a little "party time" button on already-merged PRs for when you want to relive the glory
+- lets you pick how extra you want to be (4 levels of chaos)
+- has a test button so you can yeet confetti whenever you want
+- works on Bitbucket because apparently that's what you use
 
-## Installation
+## how to install this thing
 
-### Load as Unpacked Extension
+### the actual steps
 
-1. Open Chrome and navigate to `chrome://extensions/`
-2. Enable "Developer mode" in the top right corner
-3. Click "Load unpacked"
-4. Select the `bitbucket-confetti` folder
-5. The extension is now installed!
+1. go to `chrome://extensions/` in your browser
+2. flip on "Developer mode" (top right, can't miss it)
+3. click "Load unpacked"
+4. point it at the `bitbucket-confetti` folder
+5. boom, you got confetti
 
-### Generate Icons (Optional)
+### icons (if you care)
 
-Before loading the extension, you can generate proper icon files:
+the extension needs icons but honestly just use whatever. if you want the fancy auto-generated ones:
 
-1. Open `icons/generate-icons.html` in your browser
-2. This will automatically download three PNG files: `icon16.png`, `icon48.png`, and `icon128.png`
-3. Move these files to the `icons/` directory
-4. Reload the extension in Chrome
+1. open `icons/generate-icons.html` in your browser
+2. it'll download 3 PNG files
+3. shove them in the `icons/` folder
+4. reload the extension
 
-Alternatively, you can create your own icons or use any 16x16, 48x48, and 128x128 PNG files.
+or just make your own. 16x16, 48x48, and 128x128 pixels. go wild.
 
-## Usage
+## how to use it
 
-### Automatic Mode
-1. Visit any Bitbucket pull request page (e.g., `https://bitbucket.org/yourteam/yourrepo/pull-requests/123`)
-2. When the PR is merged (while you're watching), confetti will automatically appear!
+### it just works (automatic mode)
+1. open a PR on Bitbucket
+2. merge it
+3. confetti happens
+4. feel good about yourself
 
-### Manual Mode (Already-Merged PRs)
-If you visit a PR that's already merged, you'll see a "🎉 Celebrate!" button in the bottom-right corner. Click it to trigger confetti anytime!
+### manual mode (for the nostalgic)
+already merged a PR? there's a "🎉 party time" button in the bottom right. click it. you know you want to.
 
-### Settings
-Click the extension icon to open settings and:
-- Choose your preferred confetti level
-- Test the confetti effect with the "Test Confetti" button
+### settings (for the control freaks)
+click the extension icon to mess with stuff:
+- pick your chaos level
+- test it before committing to the bit
 
-## Confetti Levels
+## the chaos levels explained
 
-- **Minimal**: A subtle celebration with ~50 particles
-- **A Lot**: The perfect amount with ~150 particles (default)
-- **A TON**: MAXIMUM CELEBRATION with ~300 particles and multiple bursts!
-- **EXTREME**: ABSOLUTELY RIDICULOUS - 10 seconds of non-stop confetti explosions from all directions! Completely covers the screen!
+- **barely trying**: ~50 particles. for people who hate fun.
+- **respectfully extra**: ~150 particles. this is the default because we have taste.
+- **AGGRESSIVELY FESTIVE**: ~300 particles for 3 seconds. your coworkers WILL ask questions.
+- **UNHINGED**: 10 full seconds of confetti from every direction. screen coverage: yes. regrets: none.
 
-## Project Structure
+## what's in here
 
 ```
 bitbucket-confetti/
-├── manifest.json          # Extension configuration
-├── content.js            # Monitors PR pages and triggers confetti
-├── popup.html            # Settings panel UI
-├── popup.js              # Settings panel logic
-├── popup.css             # Settings panel styles
+├── manifest.json          # chrome extension stuff
+├── content.js            # the script that stalks your PR and throws confetti
+├── popup.html            # settings UI (it's pretty)
+├── popup.js              # settings logic
+├── popup.css             # makes it not look like garbage
 ├── lib/
-│   └── canvas-confetti.js # Confetti animation library
+│   └── canvas-confetti.js # the actual confetti magic (not ours)
 ├── icons/
-│   ├── generate-icons.html # Icon generator
-│   ├── icon16.png         # 16x16 extension icon
-│   ├── icon48.png         # 48x48 extension icon
-│   └── icon128.png        # 128x128 extension icon
-└── README.md             # This file
+│   └── generate-icons.html # makes icons if you're lazy
+└── README.md             # you're reading it
 ```
 
-## How It Works
+## how does it work tho
 
-1. **Content Script**: The `content.js` file runs on all Bitbucket PR pages
-2. **DOM Monitoring**: It observes the page for merge indicators (badges, messages, etc.)
-3. **Confetti Trigger**: When a merge is detected, it fires the confetti based on your settings
-4. **Settings Storage**: Your preferences are saved using Chrome's sync storage API
+1. **content.js** runs on every Bitbucket PR page you visit
+2. it watches for the "Merged" badge like a hawk
+3. when it spots a merge, it yeets confetti at your screen
+4. your settings live in Chrome's sync storage so they follow you around
 
-## Troubleshooting
+## something broke
 
-### Confetti not showing?
+### no confetti showing up?
+- are you on an actual PR page? (`https://bitbucket.org/whatever/pull-requests/123`)
+- is it actually merged? check for the merge badge
+- open console (F12) and look for errors or the "Bitbucket Confetti triggered!" message
+- try refreshing the page
+- reload the extension
 
-- Make sure you're on a Bitbucket pull request page (`https://bitbucket.org/*/pull-requests/*`)
-- Check that the PR is actually merged (look for "Merged" badge/status)
-- Open the browser console (F12) and look for "Bitbucket Confetti triggered!" message
-- Try refreshing the page
+### settings won't save?
+- check if the extension has storage permission (it should)
+- right-click the extension icon → "Inspect popup" and look for errors
+- worst case: uninstall and reinstall
 
-### Settings not saving?
+### wanna tweak the code?
+- confetti settings live in the `confettiConfigs` object in `content.js`
+- popup styling is in `popup.css`
+- if Bitbucket changes their UI and breaks detection, update the selectors in `content.js`
 
-- Check that the extension has the "storage" permission
-- Look for errors in the extension's popup console (right-click extension icon → "Inspect popup")
+## credit where it's due
 
-### Want to customize?
+- uses [canvas-confetti](https://github.com/catdad/canvas-confetti) by catdad (they're the real MVP)
+- made by someone who was tired of PRs feeling like mundane tasks
 
-- Edit the `confettiConfigs` object in `content.js` to adjust particle counts, spread, duration, etc.
-- Modify `popup.css` to change the look of the settings panel
-- Update `content.js` detection logic if Bitbucket changes their UI
+## license
 
-## Credits
-
-- Built with [canvas-confetti](https://github.com/catdad/canvas-confetti) by catdad
-- Created for Bitbucket users who love celebrating wins
-
-## License
-
-MIT License - Feel free to use and modify!
+MIT - do whatever you want with it. copy it, break it, make it worse. we're not your parents.

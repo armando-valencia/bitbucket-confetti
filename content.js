@@ -1,21 +1,13 @@
 (function () {
   "use strict";
 
-  console.log("🎉 Bitbucket Confetti extension loaded!");
-  console.log("Current URL:", window.location.href);
-
-  // Check if we're on an individual PR page (not a list page)
   function isIndividualPRPage() {
     const url = window.location.href;
-    // Individual PR URLs have a number at the end: /pull-requests/123 or /pull-requests/123/overview
-    // List pages have query params: /pull-requests/?user_filter=...
     const prNumberPattern = /\/pull-requests\/\d+/;
     return prNumberPattern.test(url);
   }
 
-  // Exit early if not on an individual PR page
   if (!isIndividualPRPage()) {
-    console.log("Not on individual PR page, exiting...");
     return;
   }
 
@@ -74,7 +66,7 @@
           return;
         }
 
-        // Fire from all directions
+        // fire from all directions
         confetti({
           ...config,
           particleCount: 200,
@@ -99,7 +91,7 @@
           origin: { x: 0.5, y: 0.3 },
         });
 
-        // Random explosions
+        // confetti explosions
         confetti({
           ...config,
           particleCount: 100,
@@ -139,15 +131,9 @@
     } else {
       confetti(config);
     }
-
-    console.log("🎉 Bitbucket Confetti triggered!", level);
   }
 
-  // Check if PR is merged by looking for merge indicators
   function isPRMerged() {
-    console.log("Checking if PR is merged...");
-
-    // Look for the merged state badge/indicator
     const mergedBadge = document.querySelector(
       '[data-testid="pullrequest-state-badge"]'
     );
@@ -155,37 +141,30 @@
       const text = mergedBadge.textContent.toLowerCase();
       console.log("Found badge with text:", text);
       if (text.includes("merged")) {
-        console.log("✓ PR is merged (badge check)");
         return true;
       }
     }
 
-    // Alternative: check for merge message
     const mergeMessage = document.querySelector(
       '[data-qa="pr-merged-message"]'
     );
     if (mergeMessage) {
-      console.log("✓ PR is merged (merge message check)");
       return true;
     }
 
-    // Check for "Merged" text in various places
     const bodyText = document.body.innerText.toLowerCase();
     if (
       bodyText.includes("this pull request is merged") ||
       bodyText.includes("merged this pull request") ||
       bodyText.includes("pull request merged")
     ) {
-      console.log("✓ PR is merged (body text check)");
       return true;
     }
 
-    // Check for span or div with "MERGED" status
     const statusElements = document.querySelectorAll("span, div, button");
     for (const el of statusElements) {
       const text = el.textContent.trim().toUpperCase();
       if (text === "MERGED" && el.children.length === 0) {
-        console.log("✓ PR is merged (status element check)");
         return true;
       }
     }
@@ -203,14 +182,12 @@
     }
     if (document.getElementById("bitbucket-confetti-btn")) {
       console.log("Button already exists");
-      return; // Already added
+      return;
     }
-
-    console.log("Adding celebrate button!");
 
     const button = document.createElement("button");
     button.id = "bitbucket-confetti-btn";
-    button.textContent = "🎉 Celebrate!";
+    button.textContent = "🎉 do it again";
     button.style.cssText = `
       position: fixed;
       bottom: 20px;
@@ -241,16 +218,11 @@
 
     button.addEventListener("click", () => {
       triggerConfetti();
-      button.textContent = "🎉 Woohoo!";
-      setTimeout(() => {
-        button.textContent = "🎉 Celebrate!";
-      }, 2000);
     });
 
     document.body.appendChild(button);
   }
 
-  // Observe DOM changes to detect merge events
   function observePRStatus() {
     if (isPRMerged() && !hasTriggered) {
       hasTriggered = true;
@@ -258,7 +230,6 @@
       return;
     }
 
-    // Add manual trigger button if already merged
     if (isPRMerged()) {
       addManualTriggerButton();
     }
@@ -270,7 +241,6 @@
         observer.disconnect();
       }
 
-      // Add button if merge happens
       if (isPRMerged()) {
         addManualTriggerButton();
       }
@@ -291,7 +261,6 @@
     observePRStatus();
   }
 
-  // Also check on navigation changes (for single-page app behavior)
   let lastUrl = location.href;
   new MutationObserver(() => {
     const url = location.href;
