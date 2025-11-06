@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "Bitbucket Confetti",
+  "version": "1.0.0",
+  "description": "Celebrate PR merges with confetti on Bitbucket!",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://bitbucket.org/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://bitbucket.org/*/pull-requests/*"],
+      "js": ["lib/canvas-confetti.js", "content.js"],
+      "run_at": "document_end"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

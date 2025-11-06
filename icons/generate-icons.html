@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Generate Icons</title>
+</head>
+<body>
+  <h2>Generating placeholder icons...</h2>
+  <canvas id="canvas"></canvas>
+  <script>
+    // Generate simple confetti icon placeholders
+    const sizes = [16, 48, 128];
+
+    sizes.forEach(size => {
+      const canvas = document.createElement('canvas');
+      canvas.width = size;
+      canvas.height = size;
+      const ctx = canvas.getContext('2d');
+
+      // Purple gradient background
+      const gradient = ctx.createLinearGradient(0, 0, size, size);
+      gradient.addColorStop(0, '#667eea');
+      gradient.addColorStop(1, '#764ba2');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, size, size);
+
+      // Draw confetti shapes
+      const colors = ['#FFD700', '#FF69B4', '#00CED1', '#FF6347', '#98FB98'];
+      const confettiCount = Math.max(3, Math.floor(size / 16));
+
+      for (let i = 0; i < confettiCount; i++) {
+        ctx.fillStyle = colors[i % colors.length];
+        const x = (size / (confettiCount + 1)) * (i + 1);
+        const y = size / 2 + (Math.sin(i) * size / 6);
+        const rectSize = size / 8;
+        ctx.fillRect(x - rectSize/2, y - rectSize/2, rectSize, rectSize/2);
+      }
+
+      // Download
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `icon${size}.png`;
+        a.click();
+      });
+    });
+  </script>
+</body>
+</html>
