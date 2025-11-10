@@ -1,27 +1,7 @@
 (function () {
   "use strict";
 
-  function isIndividualPRPage() {
-    const url = window.location.href;
-    const prNumberPattern = /\/pull-requests\/\d+/;
-    return prNumberPattern.test(url);
-  }
-
-  if (!isIndividualPRPage()) {
-    return;
-  }
-
-  let hasTriggered = false;
-
-  async function getConfettiLevel() {
-    return new Promise((resolve) => {
-      chrome.storage.sync.get(["confettiLevel"], (result) => {
-        resolve(result.confettiLevel || "a-lot");
-      });
-    });
-  }
-
-  const confettiConfigs = {
+  const CONFETTI_CONFIGS = {
     minimal: {
       particleCount: 50,
       spread: 60,
@@ -50,99 +30,32 @@
     },
   };
 
-  async function triggerConfetti() {
-    const level = await getConfettiLevel();
-    const config = confettiConfigs[level];
+  const BUTTON_ID = "bitbucket-confetti-btn";
+  const PR_PATTERN = /\/pull-requests\/\d+/;
+  let hasTriggered = false;
+  let lastUrl = location.href;
 
-    if (level === "extreme") {
-      const duration = 10000;
-      const animationEnd = Date.now() + duration;
+  function isIndividualPRPage() {
+    return PR_PATTERN.test(window.location.href);
+  }
 
-      const interval = setInterval(() => {
-        const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-          clearInterval(interval);
-          return;
-        }
-
-        // fire from all directions
-        confetti({
-          ...config,
-          particleCount: 200,
-          angle: 60,
-          spread: 100,
-          origin: { x: 0, y: 0.6 },
-        });
-
-        confetti({
-          ...config,
-          particleCount: 200,
-          angle: 120,
-          spread: 100,
-          origin: { x: 1, y: 0.6 },
-        });
-
-        confetti({
-          ...config,
-          particleCount: 150,
-          angle: 90,
-          spread: 120,
-          origin: { x: 0.5, y: 0.3 },
-        });
-
-        // confetti explosions
-        confetti({
-          ...config,
-          particleCount: 100,
-          angle: Math.random() * 360,
-          spread: 100,
-          origin: { x: Math.random(), y: Math.random() * 0.6 },
-        });
-      }, 150);
-    } else if (level === "a-ton") {
-      const duration = 3000;
-      const animationEnd = Date.now() + duration;
-
-      const interval = setInterval(() => {
-        const timeLeft = animationEnd - Date.now();
-
-        if (timeLeft <= 0) {
-          clearInterval(interval);
-          return;
-        }
-
-        confetti({
-          ...config,
-          particleCount: 100,
-          angle: 60,
-          spread: 55,
-          origin: { x: 0 },
-        });
-
-        confetti({
-          ...config,
-          particleCount: 100,
-          angle: 120,
-          spread: 55,
-          origin: { x: 1 },
-        });
-      }, 250);
-    } else {
-      confetti(config);
-    }
+  async function getConfettiLevel() {
+    return new Promise((resolve) => {
+      chrome.storage.sync.get(["confettiLevel"], (result) => {
+        resolve(result.confettiLevel || "a-lot");
+      });
+    });
   }
 
   function isPRMerged() {
     const mergedBadge = document.querySelector(
       '[data-testid="pullrequest-state-badge"]'
     );
-    if (mergedBadge) {
-      const text = mergedBadge.textContent.toLowerCase();
-      console.log("Found badge with text:", text);
-      if (text.includes("merged")) {
-        return true;
-      }
+    if (
+      mergedBadge &&
+      mergedBadge.textContent.toLowerCase().includes("merged")
+    ) {
+      return true;
     }
 
     const mergeMessage = document.querySelector(
@@ -169,24 +82,101 @@
       }
     }
 
-    console.log("✗ PR is not merged (no indicators found)");
     return false;
   }
 
-  // Add a manual trigger button for already-merged PRs
-  function addManualTriggerButton() {
-    console.log("Attempting to add manual trigger button...");
-    if (!isPRMerged()) {
-      console.log("Skipping button - PR not merged");
-      return;
-    }
-    if (document.getElementById("bitbucket-confetti-btn")) {
-      console.log("Button already exists");
-      return;
-    }
+  function triggerExtremeMode(config) {
+    const duration = 10000;
+    const animationEnd = Date.now() + duration;
 
+    const interval = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        return;
+      }
+
+      confetti({
+        ...config,
+        particleCount: 200,
+        angle: 60,
+        spread: 100,
+        origin: { x: 0, y: 0.6 },
+      });
+
+      confetti({
+        ...config,
+        particleCount: 200,
+        angle: 120,
+        spread: 100,
+        origin: { x: 1, y: 0.6 },
+      });
+
+      confetti({
+        ...config,
+        particleCount: 150,
+        angle: 90,
+        spread: 120,
+        origin: { x: 0.5, y: 0.3 },
+      });
+
+      confetti({
+        ...config,
+        particleCount: 100,
+        angle: Math.random() * 360,
+        spread: 100,
+        origin: { x: Math.random(), y: Math.random() * 0.6 },
+      });
+    }, 150);
+  }
+
+  function triggerATonMode(config) {
+    const duration = 3000;
+    const animationEnd = Date.now() + duration;
+
+    const interval = setInterval(() => {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        clearInterval(interval);
+        return;
+      }
+
+      confetti({
+        ...config,
+        particleCount: 100,
+        angle: 60,
+        spread: 55,
+        origin: { x: 0 },
+      });
+
+      confetti({
+        ...config,
+        particleCount: 100,
+        angle: 120,
+        spread: 55,
+        origin: { x: 1 },
+      });
+    }, 250);
+  }
+
+  async function triggerConfetti() {
+    const level = await getConfettiLevel();
+    const config = CONFETTI_CONFIGS[level];
+
+    if (level === "extreme") {
+      triggerExtremeMode(config);
+    } else if (level === "a-ton") {
+      triggerATonMode(config);
+    } else {
+      confetti(config);
+    }
+  }
+
+  function createButton() {
     const button = document.createElement("button");
-    button.id = "bitbucket-confetti-btn";
+    button.id = BUTTON_ID;
     button.textContent = "🎉 do it again";
     button.style.cssText = `
       position: fixed;
@@ -220,7 +210,15 @@
       triggerConfetti();
     });
 
-    document.body.appendChild(button);
+    return button;
+  }
+
+  function addManualTriggerButton() {
+    if (!isPRMerged() || document.getElementById(BUTTON_ID)) {
+      return;
+    }
+
+    document.body.appendChild(createButton());
   }
 
   function observePRStatus() {
@@ -234,7 +232,7 @@
       addManualTriggerButton();
     }
 
-    const observer = new MutationObserver((mutations) => {
+    const observer = new MutationObserver(() => {
       if (isPRMerged() && !hasTriggered) {
         hasTriggered = true;
         triggerConfetti();
@@ -254,20 +252,30 @@
     });
   }
 
-  // Initialize when page loads
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", observePRStatus);
-  } else {
-    observePRStatus();
+  function observeUrlChanges() {
+    new MutationObserver(() => {
+      const url = location.href;
+      if (url !== lastUrl) {
+        lastUrl = url;
+        hasTriggered = false;
+        setTimeout(observePRStatus, 1000);
+      }
+    }).observe(document, { subtree: true, childList: true });
   }
 
-  let lastUrl = location.href;
-  new MutationObserver(() => {
-    const url = location.href;
-    if (url !== lastUrl) {
-      lastUrl = url;
-      hasTriggered = false;
-      setTimeout(observePRStatus, 1000); // Wait for page to load
+  function init() {
+    if (!isIndividualPRPage()) {
+      return;
     }
-  }).observe(document, { subtree: true, childList: true });
+
+    if (document.readyState === "loading") {
+      document.addEventListener("DOMContentLoaded", observePRStatus);
+    } else {
+      observePRStatus();
+    }
+
+    observeUrlChanges();
+  }
+
+  init();
 })();
